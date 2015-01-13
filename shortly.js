@@ -2,7 +2,7 @@ var express = require('express');
 var util = require('./lib/utility');
 var partials = require('express-partials');
 var bodyParser = require('body-parser');
-var hasher = require('password-hash');
+var bcrypt = require('bcrypt-nodejs');
 
 
 var db = require('./app/config');
@@ -26,7 +26,7 @@ app.use(express.static(__dirname + '/public'));
 
 app.get('/',
 function(req, res) {
-  res.redirect('/login');
+  res.redirect('index');
 });
 
 app.get('/create',
@@ -53,12 +53,23 @@ function(req, res) {
 
 app.post('/signup',
 function(req, res){
-  console.log('I am the information ', req.body.username);
   var username = req.body.username;
   var password = req.body.password;
-  var newPassword = hasher.generate(password, {saltLength: 12});
-  console.log(hasher.verify('123password', newPassword));
-  res.end(404);
+
+  new User({username: username, password: password})
+  .fetch()
+  .then(function(user){
+    if(!user){
+      var self = new User({username: username, password: password});
+      self.save()
+      .then(function(newUser){
+        Users.add(newUser);
+        console.log(Users);
+        res.redirect('/login');
+        res.send(200);
+      });
+    }
+  });
 });
 
 

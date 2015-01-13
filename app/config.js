@@ -62,7 +62,8 @@ db.knex.schema.hasTable('users').then(function(exists) {
 
 db.knex.schema.hasTable('cookies').then(function(exists) {
   if (!exists) {
-    db.knex.schema.createTable('cookie', function (cookie) {
+    db.knex.schema.createTable('cookies', function (cookie) {
+      cookie.string('id').primary();
       cookie.integer('user_id');
       cookie.timestamps();
     }).then(function (table) {
