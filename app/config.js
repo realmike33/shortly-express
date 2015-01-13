@@ -56,6 +56,8 @@ db.knex.schema.hasTable('users').then(function(exists) {
     }).then(function (table) {
       console.log('Created Table', table);
     });
+  } else {
+    db.knex.schema.dropTable('users');
   }
 });
 
