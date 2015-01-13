@@ -2,7 +2,7 @@ var express = require('express');
 var util = require('./lib/utility');
 var partials = require('express-partials');
 var bodyParser = require('body-parser');
-var bcrypt = require('bcrypt-nodejs');
+var cookieParser = require('cookieParser');
 
 
 var db = require('./app/config');
@@ -22,6 +22,7 @@ app.use(bodyParser.json());
 // Parse forms (signup/login)
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname + '/public'));
+app.use(cookieParser());
 
 
 app.get('/',
@@ -64,7 +65,6 @@ function(req, res){
       self.save()
       .then(function(newUser){
         Users.add(newUser);
-        console.log(Users);
         res.redirect('/login');
         res.send(200);
       });
