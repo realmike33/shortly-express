@@ -2,6 +2,7 @@ var express = require('express');
 var util = require('./lib/utility');
 var partials = require('express-partials');
 var bodyParser = require('body-parser');
+var hasher = require('password-hash');
 
 
 var db = require('./app/config');
@@ -23,24 +24,56 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname + '/public'));
 
 
-app.get('/', 
+app.get('/',
+function(req, res) {
+  res.redirect('/login');
+});
+
+app.get('/create',
 function(req, res) {
   res.render('index');
 });
 
-app.get('/create', 
+app.get('/signup',
 function(req, res) {
-  res.render('index');
+  res.render('signup');
 });
 
-app.get('/links', 
+app.get('/login',
+function(req, res) {
+  res.render('login');
+});
+
+app.get('/links',
 function(req, res) {
   Links.reset().fetch().then(function(links) {
     res.send(200, links.models);
   });
 });
 
-app.post('/links', 
+app.post('/signup',
+function(req, res){
+  console.log('I am the information ', req.body.username);
+  var username = req.body.username;
+  var password = req.body.password;
+  var newPassword = hasher.generate(password, {saltLength: 12});
+  console.log(hasher.verify('123password', newPassword));
+  res.end(404);
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+app.post('/links',
 function(req, res) {
   var uri = req.body.url;
 

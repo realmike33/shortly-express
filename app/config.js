@@ -1,5 +1,6 @@
 var Bookshelf = require('bookshelf');
 var path = require('path');
+var hasher = require('password-hash');
 
 var db = Bookshelf.initialize({
   client: 'sqlite3',
@@ -44,6 +45,46 @@ db.knex.schema.hasTable('clicks').then(function(exists) {
 /************************************************************/
 // Add additional schema definitions below
 /************************************************************/
+
+db.knex.schema.hasTable('users').then(function(exists) {
+  if (!exists) {
+    db.knex.schema.createTable('users', function (user) {
+      user.increments('id').primary();
+      user.string('username');
+      user.string('password');
+      user.timestamps();
+    }).then(function (table) {
+      console.log('Created Table', table);
+    });
+  }
+});
+
+
+db.knex.schema.hasTable('cookies').then(function(exists) {
+  if (!exists) {
+    db.knex.schema.createTable('cookie', function (cookie) {
+      cookie.integer('user_id');
+      cookie.timestamps();
+    }).then(function (table) {
+      console.log('Created Table', table);
+    });
+  }
+});
+
+
+db.knex.schema.hasTable('user_urls').then(function(exists) {
+  if (!exists) {
+    db.knex.schema.createTable('user_urls', function (user_url) {
+      user_url.integer('users_id');
+      user_url.integer('urls_id');
+      user_url.timestamps();
+    }).then(function (table) {
+      console.log('Created Table', table);
+    });
+  }
+});
+
+
 
 
 module.exports = db;
